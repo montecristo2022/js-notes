@@ -7,7 +7,7 @@ function renderNotes() {
   const maxNotes = notesByCategory.length > 0 ? Math.max(...notesByCategory.map((notes) => notes.length)) : 0;
   notesList.innerHTML = `
     <table>
-    <h1>Active notes<h1/>
+    <h1>Active notes</h1>
       <tr>
         ${categories.map((category) => `<th>${category}</th>`).join("")}
       </tr>
@@ -42,8 +42,41 @@ function renderNotes() {
 
 
 
+
+function renderSummary() {
+  const categories = Array.from(new Set(notes.map((note) => note.category)));
+  const summary = categories.map((category) => ({
+    category,
+    active: notes.filter((note) => !note.archived && note.category === category)
+      .length,
+    archived: notes.filter(
+      (note) => note.archived && note.category === category
+    ).length,
+  }));
+  summaryTable.innerHTML = `
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Active</th>
+                <th>Archived!</th>
+            </tr>
+            ${summary
+              .map(
+                (row) => `
+                <tr>
+                    <td>${row.category}</td>
+                    <td>${row.active}</td>
+                    <td>${row.archived}</td>
+                </tr>
+            `
+              )
+              .join("")}
+        </table>
+    `;
+}
+
+
 function renderArchivedNotes() {
-    console.log(5)
   const archivedNotes = notes.filter((note) => note.archived);
   const categories = Array.from(new Set(archivedNotes.map((note) => note.category)));
   const notesByCategory = categories.map((category) =>
@@ -51,8 +84,8 @@ function renderArchivedNotes() {
   );
   const maxNotes = notesByCategory.length > 0 ? Math.max(...notesByCategory.map((notes) => notes.length)) : 0;
   archivedNotesList.innerHTML = `
+
     <table>
-    <h1>Archieved notes<h1/>
       <tr>
         ${categories.map((category) => `<th>${category}</th>`).join("")}
       </tr>
@@ -81,35 +114,3 @@ function renderArchivedNotes() {
   `;
 }
 
-
-function renderSummary() {
-  const categories = Array.from(new Set(notes.map((note) => note.category)));
-  const summary = categories.map((category) => ({
-    category,
-    active: notes.filter((note) => !note.archived && note.category === category)
-      .length,
-    archived: notes.filter(
-      (note) => note.archived && note.category === category
-    ).length,
-  }));
-  summaryTable.innerHTML = `
-        <table>
-            <tr>
-                <th>Category</th>
-                <th>Active</th>
-                <th>Archived</th>
-            </tr>
-            ${summary
-              .map(
-                (row) => `
-                <tr>
-                    <td>${row.category}</td>
-                    <td>${row.active}</td>
-                    <td>${row.archived}</td>
-                </tr>
-            `
-              )
-              .join("")}
-        </table>
-    `;
-}

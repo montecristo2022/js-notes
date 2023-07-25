@@ -1,6 +1,7 @@
 function addNote(e) {
   e.preventDefault();
   const noteDate = document.getElementById('note-date');
+    console.log(noteContent.value); 
   const note = {
     id: Math.random(),
     time: new Date(noteDate.value),
@@ -29,7 +30,7 @@ function handleEditEnd(e) {
     const noteId = e.target.getAttribute('data-id');
     const note = notes.find(note => note.id === Number(noteId));
     if (!note) return;
-    note.content = e.target.textContent;
+    note.content = contentElement.innerText;
     e.target.contentEditable = false;
     renderSummary();
 }
