@@ -1,18 +1,20 @@
 function addNote(e) {
-    e.preventDefault();
-    const note = {
-        id: Math.random(),
-        time: new Date(),
-        content: noteContent.value,
-        category: noteCategory.value,
-        archived: false,
-        datesMentioned: getDatesMentioned(noteContent.value),
-    };
-    notes.push(note);
-    renderNotes();
-    renderSummary();
-    noteForm.reset();
+  e.preventDefault();
+  const noteDate = document.getElementById('note-date');
+  const note = {
+    id: Math.random(),
+    time: new Date(noteDate.value),
+    content: noteContent.value,
+    category: noteCategory.value,
+    archived: false,
+    datesMentioned: getDatesMentioned(noteContent.value),
+  };
+  notes.push(note);
+  renderNotes();
+  renderSummary();
+  noteForm.reset();
 }
+
 
 function handleEditMode(e) {
     if (!e.target.hasAttribute('data-id')) return;
@@ -39,3 +41,6 @@ function deleteNote(e) {
     renderNotes();
     renderSummary();
 }
+
+
+
