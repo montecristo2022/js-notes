@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Notes App</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="note-form">
+      <textarea id="note-content" placeholder="Content of note"></textarea>
+      <select id="note-category">
+        <option value="Task">Task</option>
+        <option value="Random Thought">Random Thought</option>
+        <option value="Idea">Idea</option>
+      </select>
+      <button type="submit">Add Note</button>
+    </form>
+    <div id="notes-list"></div>
+    <div id="summary-table"></div>
+    <script src="./data.js"></script>
+    <script src="./utility.js"></script>
+    <script src="./actions.js"></script>
+    <script src="./render.js"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
