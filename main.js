@@ -19,15 +19,12 @@ showArchiveButton.addEventListener("click", () => {
   }
 });
 
-
-
 noteForm.addEventListener("submit", addNote);
-
 
 notesList.addEventListener("click", (e) => {
   if (e.target.classList.contains("edit")) {
     const contentElement = e.target.parentElement.querySelector('p');
-    
+
     contentElement.contentEditable = true;
     contentElement.focus();
 
@@ -37,14 +34,15 @@ notesList.addEventListener("click", (e) => {
 
       if (note) {
         note.content = contentElement.innerText;
+        note.datesMentioned = getDatesMentioned(note.content);
         console.log(`Editing note with id ${id}:`, note);
       }
-      
-      contentElement.contentEditable = false;
 
+      contentElement.contentEditable = false;
+      
       renderNotes();
       renderArchivedNotes();
-      
+
       contentElement.removeEventListener('blur', handleEditEnd);
     }
 
@@ -53,6 +51,8 @@ notesList.addEventListener("click", (e) => {
     deleteNote(e);
   }
 });
+
+
 
 
 
@@ -75,4 +75,20 @@ notesList.addEventListener("click", (event) => {
 window.addEventListener("DOMContentLoaded", (event) => {
   renderNotes();
   renderSummary();
+});
+
+
+archivedNotesList.addEventListener("click", (event) => {
+  if (event.target.classList.contains("unarchive")) {
+    const id = Number(event.target.getAttribute("data-id"));
+    const note = notes.find((note) => note.id === id);
+    
+    if (note) {
+      note.archived = false;
+      console.log(`Unarchiving note with id ${id}:`, note);
+    }
+    
+    renderNotes();
+    renderArchivedNotes();
+  }
 });

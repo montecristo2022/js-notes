@@ -1,15 +1,22 @@
 function renderNotes() {
   const activeNotes = notes.filter((note) => !note.archived);
-  const categories = Array.from(new Set(activeNotes.map((note) => note.category)));
+  const categories = Array.from(
+    new Set(activeNotes.map((note) => note.category))
+  );
   const notesByCategory = categories.map((category) =>
     activeNotes.filter((note) => note.category === category)
   );
-  const maxNotes = notesByCategory.length > 0 ? Math.max(...notesByCategory.map((notes) => notes.length)) : 0;
+  const maxNotes =
+    notesByCategory.length > 0
+      ? Math.max(...notesByCategory.map((notes) => notes.length))
+      : 0;
   notesList.innerHTML = `
     <table>
     <h1>Active notes</h1>
       <tr>
-        ${categories.map((category) => `<th>${category}</th>`).join("")}
+        ${categories
+          .map((category) => `<th>${category}</th><th>Dates</th>`)
+          .join("")}
       </tr>
       ${new Array(maxNotes)
         .fill()
@@ -22,13 +29,15 @@ function renderNotes() {
                     <td>
                       ${
                         notes[i]
-                          ? `<p data-id="${notes[i].id}" contenteditable="false">${notes[i].content}  (Date: ${new Date(notes[i].time).toLocaleDateString()})</p>
-                              
-                                <button class="edit" data-id="${notes[i].id}">Edit</button>
-                                <button class="delete" data-id="${notes[i].id}">Delete</button>
-                                <button class="archive" data-id="${notes[i].id}">Archive</button>`
+                          ? `<p data-id="${notes[i].id}" contenteditable="false">${notes[i].content} </p>
+                             <button class="edit" data-id="${notes[i].id}">Edit</button>
+                             <button class="delete" data-id="${notes[i].id}">Delete</button>
+                             <button class="archive" data-id="${notes[i].id}">Archive</button>`
                           : ""
                       }
+                    </td>
+                    <td>
+                      ${notes[i] ? `${notes[i].datesMentioned.join(", ")}` : ""}
                     </td>`
                 )
                 .join("")}
@@ -39,9 +48,6 @@ function renderNotes() {
     </table>
   `;
 }
-
-
-
 
 function renderSummary() {
   const categories = Array.from(new Set(notes.map((note) => note.category)));
@@ -75,7 +81,6 @@ function renderSummary() {
     `;
 }
 
-
 function renderArchivedNotes() {
   const archivedNotes = notes.filter((note) => note.archived);
   const categories = Array.from(new Set(archivedNotes.map((note) => note.category)));
@@ -84,10 +89,12 @@ function renderArchivedNotes() {
   );
   const maxNotes = notesByCategory.length > 0 ? Math.max(...notesByCategory.map((notes) => notes.length)) : 0;
   archivedNotesList.innerHTML = `
-
     <table>
+    <h1>Archived notes</h1>
       <tr>
-        ${categories.map((category) => `<th>${category}</th>`).join("")}
+        ${categories
+          .map((category) => `<th>${category}</th><th>Dates</th>`)
+          .join("")}
       </tr>
       ${new Array(maxNotes)
         .fill()
@@ -100,9 +107,13 @@ function renderArchivedNotes() {
                     <td>
                       ${
                         notes[i]
-                          ? `<p data-id="${notes[i].id}" contenteditable="false">${notes[i].content}  (Date: ${new Date(notes[i].time).toLocaleDateString()})</p>`
+                          ? `<p data-id="${notes[i].id}" contenteditable="false">${notes[i].content} </p>
+                             <button class="unarchive" data-id="${notes[i].id}">Unarchive</button>`
                           : ""
                       }
+                    </td>
+                    <td>
+                      ${notes[i] ? `${notes[i].datesMentioned.join(", ")}` : ""}
                     </td>`
                 )
                 .join("")}
@@ -113,4 +124,3 @@ function renderArchivedNotes() {
     </table>
   `;
 }
-
