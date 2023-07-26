@@ -1,4 +1,8 @@
-function renderNotes() {
+import { notes } from "./data.js";
+const notesList = document.getElementById("notes-list");
+const summaryTable = document.getElementById("summary-table");
+
+export function renderNotes() {
   const activeNotes = notes.filter((note) => !note.archived);
   const categories = Array.from(
     new Set(activeNotes.map((note) => note.category))
@@ -6,13 +10,15 @@ function renderNotes() {
   const notesByCategory = categories.map((category) =>
     activeNotes.filter((note) => note.category === category)
   );
+
   const maxNotes =
     notesByCategory.length > 0
       ? Math.max(...notesByCategory.map((notes) => notes.length))
       : 0;
+
   notesList.innerHTML = `
     <table>
-    <h1>Active notes</h1>
+     <h1>Active notes</h1>
       <tr>
         ${categories
           .map((category) => `<th>${category}</th><th>Dates</th>`)
@@ -49,7 +55,7 @@ function renderNotes() {
   `;
 }
 
-function renderSummary() {
+export function renderSummary() {
   const categories = Array.from(new Set(notes.map((note) => note.category)));
   const summary = categories.map((category) => ({
     category,
@@ -81,13 +87,18 @@ function renderSummary() {
     `;
 }
 
-function renderArchivedNotes() {
+export function renderArchivedNotes(archivedNotesList) {
   const archivedNotes = notes.filter((note) => note.archived);
-  const categories = Array.from(new Set(archivedNotes.map((note) => note.category)));
+  const categories = Array.from(
+    new Set(archivedNotes.map((note) => note.category))
+  );
   const notesByCategory = categories.map((category) =>
     archivedNotes.filter((note) => note.category === category)
   );
-  const maxNotes = notesByCategory.length > 0 ? Math.max(...notesByCategory.map((notes) => notes.length)) : 0;
+  const maxNotes =
+    notesByCategory.length > 0
+      ? Math.max(...notesByCategory.map((notes) => notes.length))
+      : 0;
   archivedNotesList.innerHTML = `
     <table>
     <h1>Archived notes</h1>

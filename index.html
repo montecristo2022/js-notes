@@ -12,6 +12,13 @@
         border: 1px solid black;
         padding: 12px;
       }
+
+      #note-form textarea,
+      #note-form select,
+      #note-form button {
+        display: block;
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body>
@@ -22,19 +29,13 @@
         <option value="Random Thought">Random Thought</option>
         <option value="Idea">Idea</option>
       </select>
-      <!-- <input type="date" id="note-date" /> -->
       <button type="submit">Add Note</button>
     </form>
-
-    <button id="show-archive">Show archive</button>
+    <button id="show-archive">Show Archive</button>
     <div id="archived-notes-list"></div>
-
     <div id="notes-list"></div>
     <div id="summary-table"></div>
-    <script src="./data.js"></script>
-    <script src="./utility.js"></script>
-    <script src="./actions.js"></script>
-    <script src="./render.js"></script>
-    <script src="./main.js"></script>
+
+    <script type="module" src="./main.js"></script>
   </body>
 </html>

@@ -1,94 +1,113 @@
+import { notes } from "./data.js";
+import { addNote, deleteNote, handleEditMode } from "./actions.js";
+import { renderNotes, renderSummary, renderArchivedNotes } from "./render.js";
+
 const noteForm = document.getElementById("note-form");
-const noteContent = document.getElementById("note-content");
-const noteCategory = document.getElementById("note-category");
-
 const notesList = document.getElementById("notes-list");
-const summaryTable = document.getElementById("summary-table");
-
 const showArchiveButton = document.getElementById("show-archive");
 const archivedNotesList = document.getElementById("archived-notes-list");
 
-archivedNotesList.style.display = "none";
+if (archivedNotesList) {
+  archivedNotesList.style.display = "none";
+}
 
-showArchiveButton.addEventListener("click", () => {
-  if (archivedNotesList.style.display === "none") {
-    archivedNotesList.style.display = "block";
-    renderArchivedNotes();
-  } else {
-    archivedNotesList.style.display = "none";
-  }
-});
-
-noteForm.addEventListener("submit", addNote);
-
-notesList.addEventListener("click", (e) => {
-  if (e.target.classList.contains("edit")) {
-    const contentElement = e.target.parentElement.querySelector('p');
-
-    contentElement.contentEditable = true;
-    contentElement.focus();
-
-    function handleEditEnd() {
-      const id = Number(e.target.getAttribute("data-id"));
-      const note = notes.find((note) => note.id === id);
-
-      if (note) {
-        note.content = contentElement.innerText;
-        note.datesMentioned = getDatesMentioned(note.content);
-        console.log(`Editing note with id ${id}:`, note);
+if (showArchiveButton) {
+  showArchiveButton.addEventListener("click", () => {
+    if (archivedNotesList && archivedNotesList.style.display === "none") {
+      archivedNotesList.style.display = "block";
+      showArchiveButton.innerText = "Hide archive";
+      try {
+        renderArchivedNotes(archivedNotesList);
+      } catch (error) {
+        console.error(
+          "An error occurred while rendering the archived notes: ",
+          error
+        );
       }
-
-      contentElement.contentEditable = false;
-      
-      renderNotes();
-      renderArchivedNotes();
-
-      contentElement.removeEventListener('blur', handleEditEnd);
+    } else {
+      archivedNotesList.style.display = "none";
+      showArchiveButton.innerText = "Show archive";
     }
+  });
+}
 
-    contentElement.addEventListener('blur', handleEditEnd);
-  } else if (e.target.classList.contains("delete")) {
-    deleteNote(e);
-  }
-});
-
-
-
-
-
-
-notesList.addEventListener("click", (event) => {
-  if (event.target.classList.contains("archive")) {
-    const id = Number(event.target.getAttribute("data-id"));
-    const note = notes.find((note) => note.id === id);
-    
-    if (note) {
-      note.archived = true;
-      console.log(`Archiving note with id ${id}:`, note);
+if (noteForm) {
+  noteForm.addEventListener("submit", (e) => {
+    try {
+      addNote(e, noteForm);
+    } catch (error) {
+      console.error("An error occurred while adding a note: ", error);
     }
-    
-    renderNotes();
-    renderArchivedNotes();
-  }
-});
+  });
+}
+
+if (notesList) {
+  const archiveNote = (e) => {
+    try {
+      if (!e.target.hasAttribute("data-id")) return;
+      const noteId = Number(e.target.getAttribute("data-id"));
+      const noteIndex = notes.findIndex((note) => note.id === noteId);
+      if (noteIndex > -1) {
+        notes[noteIndex].archived = true;
+        renderNotes();
+        renderArchivedNotes(archivedNotesList);
+        renderSummary();
+      }
+    } catch (error) {
+      console.error("An error occurred during archiving a note: ", error);
+    }
+  };
+
+  notesList.addEventListener("click", (e) => {
+    try {
+      if (e.target.classList.contains("edit")) {
+        handleEditMode(e);
+      } else if (e.target.classList.contains("delete")) {
+        deleteNote(e);
+      } else if (e.target.classList.contains("archive")) {
+        archiveNote(e);
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred during the click event listener: ",
+        error
+      );
+    }
+  });
+}
 
 window.addEventListener("DOMContentLoaded", (event) => {
-  renderNotes();
-  renderSummary();
-});
-
-
-archivedNotesList.addEventListener("click", (event) => {
-  if (event.target.classList.contains("unarchive")) {
-    const id = Number(event.target.getAttribute("data-id"));
-    const note = notes.find((note) => note.id === id);
-    
-    if (note) {
-      note.archived = false;
-      console.log(`Unarchiving note with id ${id}:`, note);
-    }
-    
+  try {
     renderNotes();
-    renderArchivedNotes();
+    renderSummary();
+  } catch (error) {
+    console.error(
+      "An error occurred while rendering the notes or the summary: ",
+      error
+    );
   }
 });
+
+if (archivedNotesList) {
+  archivedNotesList.addEventListener("click", (event) => {
+    try {
+      if (event.target.classList.contains("unarchive")) {
+        const id = Number(event.target.getAttribute("data-id"));
+        const note = notes.find((note) => note.id === id);
+
+        if (note) {
+          note.archived = false;
+        }
+
+        renderNotes();
+        renderArchivedNotes(archivedNotesList);
+        renderSummary();
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred during the unarchive click event listener: ",
+        error
+      );
+    }
+  });
+}
