@@ -8,14 +8,13 @@ const noteCategory = document.getElementById("note-category");
 export function addNote(e, noteForm) {
   try {
     e.preventDefault();
-    console.log(noteContent.value);
     const note = {
       id: Math.random(),
-
       content: noteContent.value,
       category: noteCategory.value,
       archived: false,
       datesMentioned: getDatesMentioned(noteContent.value),
+      createdTime: new Date(), 
     };
     notes.push(note);
     renderNotes();
@@ -25,6 +24,7 @@ export function addNote(e, noteForm) {
     console.error("An error occurred during adding a note: ", error);
   }
 }
+
 
 export function handleEditMode(e) {
   const noteId = Number(e.target.getAttribute("data-id"));
